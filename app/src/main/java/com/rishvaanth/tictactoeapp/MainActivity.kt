@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             buttonSelected.setBackgroundResource(R.color.paleRed)
             player1.add(cellId)
             activeplayer = 2
+            autoplay()
         }
         else {
             buttonSelected.text = "O"
@@ -78,8 +82,70 @@ class MainActivity : AppCompatActivity() {
         if (player1.contains(3)&&player1.contains(6)&&player1.contains(9)) winner = 1
         if (player2.contains(3)&&player2.contains(6)&&player2.contains(9)) winner = 2
 
-        if (winner == 1) Toast.makeText(this, "Player $winner wins!",Toast.LENGTH_SHORT).show()
-        else if (winner ==2) Toast.makeText(this, "Player $winner wins!",Toast.LENGTH_SHORT).show()
-        else if(player1.size + player2.size == 9) Toast.makeText(this, "Its a Draw",Toast.LENGTH_SHORT).show()
+        if (winner == 1) {Toast.makeText(this, "Player $winner wins!",Toast.LENGTH_SHORT).show()
+            player1WinCount++
+            restartGame()
+        }
+        else if (winner ==2){Toast.makeText(this, "Player $winner wins!",Toast.LENGTH_SHORT).show()
+            player2WinCount++
+            restartGame()
+        }
+        else if(player1.size + player2.size == 9) {Toast.makeText(this, "Its a Draw",Toast.LENGTH_SHORT).show()
+            player1WinCount++
+            player2WinCount++
+            restartGame()
+        }
     }
+    fun autoplay(){
+        var emptyCells = ArrayList<Int>()
+
+        for (cellId in 1..9){
+            if(!player1.contains(cellId)&&!player2.contains(cellId)){
+                emptyCells.add(cellId)
+            }
+        }
+        val r = java.util.Random()
+        val randomIndex = r.nextInt(emptyCells.size)
+        val cellId = emptyCells[randomIndex]
+
+        var buttonSelected:Button?
+        buttonSelected = when(cellId){
+            1-> button_1
+            2-> button_2
+            3-> button_3
+            4-> button_4
+            5-> button_5
+            6-> button_6
+            7-> button_7
+            8-> button_8
+            9-> button_9
+            else->{return}
+        }
+        playgame(cellId, buttonSelected)
+    }
+    fun restartGame(){
+        player1.clear()
+        player2.clear()
+
+        for (i in 1..9){
+            var buttonSelected:Button?= when(i){
+                1-> button_1
+                2-> button_2
+                3-> button_3
+                4-> button_4
+                5-> button_5
+                6-> button_6
+                7-> button_7
+                8-> button_8
+                else->{button_9}
+            }
+            buttonSelected!!.text=""
+            buttonSelected!!.setBackgroundResource(R.color.colorPrimary)
+            buttonSelected.isEnabled =true
+        }
+        Toast.makeText(this, "Player 1 WinCount: ${player1WinCount}, Player 2 WinCount:${player2WinCount}",Toast.LENGTH_LONG).show()
+    }
+    var player1WinCount = 0
+    var player2WinCount = 0
+
 }
